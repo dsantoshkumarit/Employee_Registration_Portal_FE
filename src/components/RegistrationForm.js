@@ -18,8 +18,9 @@ export default function RegistrationForm() {
   const [employee, setEmployee] = React.useState(empctx.emp);
   const [picPreview, setPicPreview] = React.useState("");
 
-  React.useState(() => {
-    console.log("Registration Form render");
+  React.useEffect(() => {
+    console.log(empctx.emp.preferredlocation);
+    setEmployee(empctx.emp);
   }, [empctx.emp]);
 
   const locations = [
@@ -64,7 +65,7 @@ export default function RegistrationForm() {
       event.preventDefault();
       const mediaUrl = await handleImageUpload();
       const [code, mobileno] = [employee.mobilecode, employee.number];
-      const url = `https://recruitmentportal-be.herokuapp.com/employee/addEmployee`;
+      const url = `${process.env.REACT_APP_BACKEND_URL}/employee/addEmployee`;
       const payload = {
         ...employee,
         profilepicurl: mediaUrl,
@@ -159,8 +160,8 @@ export default function RegistrationForm() {
                   search
                   selection
                   options={locationoptions}
+                  value={employee.preferredlocation}
                   name="preferredlocation"
-                  defaultValue={employee.preferredlocation}
                   onChange={handleChange}
                 />
               </Form.Group>
@@ -198,7 +199,7 @@ export default function RegistrationForm() {
                 type="date"
                 label="DOB"
                 onChange={handleChange}
-                defaultValue={employee.dob}
+                defaultValue={employee.dob.split("T")[0]}
               />
             </Grid.Column>
           </Grid.Row>

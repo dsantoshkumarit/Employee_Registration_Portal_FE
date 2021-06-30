@@ -9,8 +9,9 @@ export default function EmployeeList() {
   const [employeeList, setEmployeeList] = React.useState([empctx.emp]);
 
   async function getAllEmployees() {
+    console.log(process.env.REACT_APP_BACKEND_URL);
     let employees = await axios.get(
-      "https://recruitmentportal-be.herokuapp.com/employee/getAllEmployees"
+      `${process.env.REACT_APP_BACKEND_URL}/employee/getAllEmployees`
     );
     setEmployeeList(employees.data);
   }
@@ -21,13 +22,12 @@ export default function EmployeeList() {
 
   function handleEdit(e, index) {
     empctx.setEmp(employeeList[index]);
-    console.log(empctx.emp);
   }
 
   async function handleDelete(e, _id) {
     try {
       let response = await axios.delete(
-        `https://recruitmentportal-be.herokuapp.com/employee/deleteEmployee/${_id}`
+        `${process.env.REACT_APP_BACKEND_URL}/employee/deleteEmployee/${_id}`
       );
       makeToast("success", response.data.message);
       getAllEmployees();

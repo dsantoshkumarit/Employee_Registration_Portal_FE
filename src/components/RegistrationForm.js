@@ -19,7 +19,6 @@ export default function RegistrationForm() {
   const [picPreview, setPicPreview] = React.useState("");
 
   React.useEffect(() => {
-    console.log(empctx.emp.preferredlocation);
     setEmployee(empctx.emp);
   }, [empctx.emp]);
 
@@ -62,21 +61,41 @@ export default function RegistrationForm() {
 
   async function handleSubmit(event) {
     try {
-      event.preventDefault();
-      const mediaUrl = await handleImageUpload();
-      const [code, mobileno] = [employee.mobilecode, employee.number];
-      const url = `${process.env.REACT_APP_BACKEND_URL}/employee/addEmployee`;
+      // event.preventDefault();
+      let mediaUrl = "";
+      if (empctx.formType === "add") {
+        mediaUrl = await handleImageUpload();
+      } else {
+        mediaUrl = employee.profilepicurl;
+      }
+      console.log(mediaUrl);
+      const [code, mobileno] = [
+        employee.mobilecode || employee.mobile[0],
+        employee.number || employee.mobile[1],
+      ];
+      let url = "";
       const payload = {
         ...employee,
         profilepicurl: mediaUrl,
         mobile: [code, mobileno],
         media: "",
       };
+      let response = {};
+      if (empctx.formType === "update") {
+        url = `${process.env.REACT_APP_BACKEND_URL}/employee/editEmployee`;
+        response = await axios({ url: url, method: "patch", data: payload });
+      } else {
+        url = `${process.env.REACT_APP_BACKEND_URL}/employee/addEmployee`;
+        response = await axios({ url: url, method: "post", data: payload });
+      }
 
-      const response = await axios.post(url, payload);
+      // const response = await axios.post(url, payload);
       makeToast("success", response.data.message);
     } catch (error) {
       makeToast("error", error?.response?.data?.message);
+    } finally {
+      empctx.setFormType("add");
+      empctx.setEmp(empctx.InitialData);
     }
   }
 
@@ -206,9 +225,10 @@ export default function RegistrationForm() {
           <Grid.Row>
             <Grid.Column>
               <Button
-                content="Add/Update"
-                icon="add"
-                color="green"
+                content={empctx.formType === "add" ? "Add" : "Update"}
+                icon={empctx.formType === "add" ? "add" : "edit"}
+                color={empctx.formType === "add" ? "green" : "violet"}
+                type="submit"
                 inverted
                 fluid
                 style={{ width: "50%", margin: "1em auto" }}

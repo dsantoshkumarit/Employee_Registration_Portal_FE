@@ -9,7 +9,6 @@ export default function EmployeeList() {
   const [employeeList, setEmployeeList] = React.useState([empctx.emp]);
 
   async function getAllEmployees() {
-    console.log(process.env.REACT_APP_BACKEND_URL);
     let employees = await axios.get(
       `${process.env.REACT_APP_BACKEND_URL}/employee/getAllEmployees`
     );
@@ -18,10 +17,12 @@ export default function EmployeeList() {
 
   React.useEffect(() => {
     getAllEmployees();
-  }, []);
+  }, [empctx.emp]);
 
   function handleEdit(e, index) {
     empctx.setEmp(employeeList[index]);
+    empctx.appRef.current.scrollIntoView();
+    empctx.setFormType("update");
   }
 
   async function handleDelete(e, _id) {

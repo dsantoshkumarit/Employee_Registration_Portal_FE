@@ -12,18 +12,24 @@ const InitialData = {
   profilepicurl: "https://react.semantic-ui.com/images/wireframe/image.png",
   email: "",
   dob: "",
+  mobilecode: "",
+  number: "",
 };
 
 function App() {
   const [emp, setEmp] = React.useState(InitialData);
-
+  const [formType, setFormType] = React.useState("add");
+  const appRef = React.useRef();
   React.useEffect(() => {
     console.log("App render");
   }, [emp, setEmp]);
 
   return (
     <>
-      <Empctx.Provider value={{ emp, setEmp }}>
+      <div ref={appRef}></div>
+      <Empctx.Provider
+        value={{ emp, setEmp, appRef, formType, setFormType, InitialData }}
+      >
         <Container style={{ marginBottom: "1em" }}>
           <Segment style={{ marginTop: "10vh" }}>
             <Grid stackable>

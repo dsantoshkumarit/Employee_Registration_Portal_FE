@@ -1,4 +1,4 @@
-import { Segment, Grid, Container } from "semantic-ui-react";
+import { Segment, Grid, Container, Header } from "semantic-ui-react";
 import RegistrationForm from "./components/RegistrationForm";
 import EmployeeList from "./components/EmployeeList";
 import React from "react";
@@ -27,6 +27,11 @@ function App() {
   return (
     <>
       <div ref={appRef}></div>
+      <Segment>
+        <Header as="h1" block textAlign="center">
+          Employee Registration Portal
+        </Header>
+      </Segment>
       <Empctx.Provider
         value={{ emp, setEmp, appRef, formType, setFormType, InitialData }}
       >
